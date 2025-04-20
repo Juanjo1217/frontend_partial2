@@ -6,19 +6,20 @@ function TweetList() {
 
   useEffect(() => {
     const fetchTweets = async () => {
+      const token = localStorage.getItem('authToken'); // Obtén el token almacenado
       try {
-        const response = await fetch('http://localhost:8083/api/tweets',
-            {
-                method: 'GET',
-                headers: {
-                'Content-Type': 'application/json',
-                "x-access-token": localStorage.getItem('token'), // Agrega el token a los headers
-                },
-            }
-        );
+        const response = await fetch('http://localhost:8083/api/tweets', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': token, // Agrega el token a los headers
+          },
+        });
+
         if (response.ok) {
           const data = await response.json();
-          setTweets(data);
+          console.log('Datos recibidos:', data);
+          setTweets(data.data); // Accede a la propiedad "data" que contiene el arreglo de tweets
         } else {
           setErrorMessage('Error al obtener las publicaciones.');
         }
@@ -35,11 +36,17 @@ function TweetList() {
       <h2>Publicaciones Recientes</h2>
       {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
       <ul>
-        {tweets.map((tweet, index) => (
-          <li key={index} style={{ marginBottom: '10px' }}>
-            <p><strong>{tweet.author}</strong>: {tweet.content}</p>
-          </li>
-        ))}
+        {Array.isArray(tweets) && tweets.length > 0 ? (
+          tweets.map((tweet, index) => (
+            <li key={index} style={{ marginBottom: '10px' }}>
+              <p>
+                <strong>{tweet.user.username}</strong>: {tweet.content}
+              </p>
+            </li>
+          ))
+        ) : (
+          <p>No hay publicaciones disponibles.</p>
+        )}
       </ul>
     </div>
   );
