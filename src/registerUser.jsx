@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 function RegisterUser() {
     const [responseMessage, setResponseMessage] = useState('');
     const [formData, setFormData] = useState({
-        username: '',
-        name: '',
-        email: '',
-        password: '',
-        passwordConfirmation: ''
+        name: "",
+        email: "",
+        username: "",
+        password: "",
+        passwordConfirmation: "",
     });
 
     const handleSubmit = async (e) => {
@@ -48,8 +48,8 @@ function RegisterUser() {
                     <label>Nombre real:</label>
                     <input
                         type="text"
-                        value={formData.username}
-                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         required
                     />
                 </div>
@@ -57,8 +57,8 @@ function RegisterUser() {
                     <label>Nombre de Usuario:</label>
                     <input
                         type="text"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        value={formData.username}
+                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                         required
                     />
                 </div>
