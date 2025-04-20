@@ -12,7 +12,7 @@ function TweetList() {
                 method: 'GET',
                 headers: {
                 'Content-Type': 'application/json',
-                "x-access-token": localStorage.getItem('token'), // Agrega el token a los headers
+                "x-access-token": localStorage.getItem('authToken'), // Agrega el token a los headers
                 },
             }
         );

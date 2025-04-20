@@ -10,7 +10,7 @@ function Login() {
     e.preventDefault();
 
     console.log('Datos enviados:', formData); // Verifica los datos enviados
-
+    
     try {
       const response = await fetch('http://localhost:8083/api/users/login', {
         method: 'POST',
@@ -21,6 +21,13 @@ function Login() {
       });
 
       if (response.ok) {
+        const data = await response.json(); // Obtén el cuerpo de la respuesta
+
+        console.log('Respuesta del servidor:', data); // Verifica la respuesta del servidor
+        
+        const token = data.data.token;  // Asegúrate de que el backend devuelva el token en esta propiedad
+        console.log('Token recibido:', token); // Verifica el token recibido
+        localStorage.setItem('authToken', token); // Guarda el token en localStorage
         setResponseMessage('Inicio de sesión exitoso.');
         navigate('/homepage'); // Redirige a la página de inicio
       } else {
