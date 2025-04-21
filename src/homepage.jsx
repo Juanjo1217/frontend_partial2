@@ -41,10 +41,19 @@ function Homepage() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('authToken'); // Elimina el token de localStorage
+    navigate('/'); // Redirige al usuario a la página de inicio de sesión
+  };
+
   return (
     <div style={{ padding: '20px' }}>
       <h1>Bienvenido a la Página de Inicio</h1>
       <p>Has iniciado sesión exitosamente.</p>
+
+      <button onClick={handleLogout} style={{ marginBottom: '20px', color: 'red' }}>
+        Cerrar sesión
+      </button>
 
       <form onSubmit={handleSubmit}>
         <div>

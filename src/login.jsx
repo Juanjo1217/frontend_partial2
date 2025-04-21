@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+
 function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [responseMessage, setResponseMessage] = useState('');
-  const navigate = useNavigate(); // Hook para redirigir
+  const navigate = useNavigate(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,15 +22,15 @@ function Login() {
       });
 
       if (response.ok) {
-        const data = await response.json(); // Obtén el cuerpo de la respuesta
+        const data = await response.json(); 
 
-        console.log('Respuesta del servidor:', data); // Verifica la respuesta del servidor
+        console.log('Respuesta del servidor:', data); 
         
-        const token = data.data.token;  // Asegúrate de que el backend devuelva el token en esta propiedad
-        console.log('Token recibido:', token); // Verifica el token recibido
-        localStorage.setItem('authToken', token); // Guarda el token en localStorage
+        const token = data.data.token;  
+        console.log('Token recibido:', token); 
+        localStorage.setItem('authToken', token); 
         setResponseMessage('Inicio de sesión exitoso.');
-        navigate('/homepage'); // Redirige a la página de inicio
+        navigate('/homepage'); 
       } else {
         setResponseMessage('Credenciales incorrectas.');
       }

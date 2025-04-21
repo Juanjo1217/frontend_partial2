@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 function RegisterUser() {
     const [responseMessage, setResponseMessage] = useState('');
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -12,7 +14,6 @@ function RegisterUser() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         // Validación de contraseñas
         if (formData.password !== formData.passwordConfirmation) {
             setResponseMessage('Las contraseñas no coinciden.');
@@ -32,6 +33,7 @@ function RegisterUser() {
 
             if (response.ok) {
                 setResponseMessage('Usuario registrado exitosamente.');
+                navigate('/'); // Redirige al usuario a la página de inicio de sesión
             } else {
                 setResponseMessage('Error al registrar el usuario.');
             }
@@ -92,6 +94,9 @@ function RegisterUser() {
                 <button type="submit">Registrar</button>
             </form>
             {responseMessage && <p>{responseMessage}</p>}
+            <p>
+                ¿Ya tiene una cuenta? <Link to="/">Inicie sesion aquí</Link>
+            </p>
         </div>
     );
 }
