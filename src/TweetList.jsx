@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
-function TweetList() {
+function TweetList({ showProfile }) {
   const [tweets, setTweets] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [commentText, setCommentText] = useState({}); // Estado para manejar los comentarios por tweet
+  const [userId, setUserId] = useState(null); // Estado para almacenar el ID del usuario autenticado
 
   useEffect(() => {
+    const storedUserId = localStorage.getItem('_id'); // Obtén el ID del usuario desde localStorage
+    console.log('ID del usuario cargado:', storedUserId); // Verifica el ID cargado
+    if (storedUserId) {
+      setUserId(storedUserId);
+    }
     fetchTweets();
   }, []);
 
@@ -22,7 +28,7 @@ function TweetList() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Datos recibidos:', data);
+        console.log('Datos recibidos:', data); // Verifica la estructura de los datos
         setTweets(data.data); // Accede a la propiedad "data" que contiene el arreglo de tweets
       } else {
         setErrorMessage('Error al obtener las publicaciones.');
@@ -117,26 +123,29 @@ function TweetList() {
         );
         setCommentText((prev) => ({ ...prev, [tweetId]: '' })); // Limpia el campo de comentario
         fetchTweets(); // Vuelve a obtener los tweets para asegurarte de que el comentario se haya agregado
-
       } else {
         console.error('Error al agregar el comentario. Código de estado:', response.status);
       }
     } catch (error) {
       console.error('Error al conectar con la API para agregar el comentario:', error);
     }
-
   };
 
-
-
+  // Filtra las publicaciones si `showProfile` es true
+  const filteredTweets = showProfile
+    ? tweets.filter((tweet) => {
+        console.log('Comparando:', tweet.user?._id, 'con', userId); // Depuración
+        return tweet.user?._id === String(userId); // Asegúrate de que ambos sean cadenas
+      })
+    : tweets;
 
   return (
     <div style={{ marginTop: '20px' }}>
-      <h2>Publicaciones Recientes</h2>
+      <h2>{showProfile ? 'Mis Publicaciones' : 'Publicaciones Recientes'}</h2>
       {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
       <ul>
-        {Array.isArray(tweets) && tweets.length > 0 ? (
-          tweets.map((tweet) => (
+        {Array.isArray(filteredTweets) && filteredTweets.length > 0 ? (
+          filteredTweets.map((tweet) => (
             <li key={tweet._id} style={{ marginBottom: '10px' }}>
               <p>
                 <strong>{tweet.user?.username || 'Usuario desconocido'}</strong>: {tweet.content || 'Sin contenido'}

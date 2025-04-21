@@ -5,6 +5,7 @@ import TweetList from './TweetList';
 function Homepage() {
   const [tweet, setTweet] = useState('');
   const [responseMessage, setResponseMessage] = useState('');
+  const [showProfile, setShowProfile] = useState(false); // Estado para alternar entre "Inicio" y "Perfil"
   const navigate = useNavigate(); // Hook para redirigir
 
   useEffect(() => {
@@ -12,6 +13,25 @@ function Homepage() {
     if (!token) {
       // Si no hay token, redirige al login
       navigate('/');
+    } else {
+      // Obtén el ID del usuario desde la API y guárdalo en localStorage
+      fetch('http://localhost:8083/api/users/me', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': token,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data._id) {
+            console.log('ID del usuario obtenido:', data._id); // Depuración
+            localStorage.setItem('userId', data._id); // Guarda el ID del usuario
+          } else {
+            console.error('No se pudo obtener el ID del usuario.');
+          }
+        })
+        .catch((error) => console.error('Error al obtener el usuario:', error));
     }
   }, [navigate]);
 
@@ -29,7 +49,7 @@ function Homepage() {
         },
         body: JSON.stringify({ content: tweet }),
       });
-      console.log('token es:', token); // Verifica el token
+      console.log('Token utilizado para publicar:', token); // Depuración
       if (response.ok) {
         setResponseMessage('Publicación realizada con éxito.');
         setTweet(''); // Limpia el campo de texto después de publicar
@@ -43,6 +63,7 @@ function Homepage() {
 
   const handleLogout = () => {
     localStorage.removeItem('authToken'); // Elimina el token de localStorage
+    localStorage.removeItem('userId'); // Elimina el ID del usuario de localStorage
     navigate('/'); // Redirige al usuario a la página de inicio de sesión
   };
 
@@ -55,25 +76,36 @@ function Homepage() {
         Cerrar sesión
       </button>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Escribe tu publicación:</label>
-          <textarea
-            value={tweet}
-            onChange={(e) => setTweet(e.target.value)}
-            rows="4"
-            cols="50"
-            placeholder="¿Qué estás pensando?"
-            required
-          />
-        </div>
-        <button type="submit">Publicar</button>
-      </form>
+      {/* Botones para alternar entre "Inicio" y "Perfil" */}
+      <div style={{ marginBottom: '20px' }}>
+        <button onClick={() => setShowProfile(false)} style={{ marginRight: '10px' }}>
+          Inicio
+        </button>
+        <button onClick={() => setShowProfile(true)}>Mi Perfil</button>
+      </div>
+
+      {/* Formulario para publicar solo si está en "Inicio" */}
+      {!showProfile && (
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label>Escribe tu publicación:</label>
+            <textarea
+              value={tweet}
+              onChange={(e) => setTweet(e.target.value)}
+              rows="4"
+              cols="50"
+              placeholder="¿Qué estás pensando?"
+              required
+            />
+          </div>
+          <button type="submit">Publicar</button>
+        </form>
+      )}
 
       {responseMessage && <p>{responseMessage}</p>}
 
       {/* Mostrar la lista de publicaciones */}
-      <TweetList />
+      <TweetList showProfile={showProfile} />
     </div>
   );
 }
