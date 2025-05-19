@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { useFeatureIsOn } from "@growthbook/growthbook-react";
 
 function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [responseMessage, setResponseMessage] = useState('');
   const navigate = useNavigate(); 
+  const showExperimentButton = useFeatureIsOn("show-experiment-button");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,6 +72,12 @@ function Login() {
       <p>
         return <button onClick={() => {throw new Error("This is your first error!");}}>Break the world</button>;
       </p>
+      
+      {showExperimentButton ? (
+        <button>Botón Experimental</button>
+      ) : (
+        <a href="#">Link Experimental</a>
+      )}
     </div>
   );
 }

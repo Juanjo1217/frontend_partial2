@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TweetList from './TweetList';
+import { useFeatureIsOn } from "@growthbook/growthbook-react";
 
 function Homepage() {
   const [tweet, setTweet] = useState('');
   const [responseMessage, setResponseMessage] = useState('');
   const [showProfile, setShowProfile] = useState(false); // Estado para alternar entre "Inicio" y "Perfil"
   const navigate = useNavigate(); // Hook para redirigir
-
+  const showExperimentButton = useFeatureIsOn("show-experiment-button");
+  
   useEffect(() => {
     const token = localStorage.getItem('authToken'); // Obtén el token almacenado
     if (!token) {
@@ -106,6 +108,7 @@ function Homepage() {
 
       {/* Mostrar la lista de publicaciones */}
       <TweetList showProfile={showProfile} />
+
     </div>
   );
 }

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@growthbook/growthbook-react": "^1.5.1",
     "@sentry/cli": "^2.45.0",
     "@sentry/react": "^9.19.0",
     "@sentry/tracing": "^7.120.3",

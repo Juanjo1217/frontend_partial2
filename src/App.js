@@ -4,26 +4,43 @@ import RegisterUser from './registerUser';
 import Login from './login';
 import Homepage from './homepage';
 import * as Sentry from "@sentry/react";
-// import { BrowserTracing } from '@sentry/tracing';
+import { GrowthBook, GrowthBookProvider, useGrowthBook } from "@growthbook/growthbook-react";
+import { autoAttributesPlugin } from "@growthbook/growthbook/plugins";
+import { use } from 'react';
 
+// Configuración de GrowthBook
+const gb = new GrowthBook({
+  apiHost: "https://cdn.growthbook.io",
+  clientKey: process.env.REACT_APP_GROWTHBOOK_CLIENT_KEY,
+  user: { id: "user-id-333" },
+  onFeatureUsage: (key, result) => {
+    console.log("Feature used:", key, result);
+  },
+});
+
+gb.loadFeatures().then(() =>
+  console.log("GrowthBook connected", gb.getFeatures())
+);
+
+// Configuración de Sentry
 Sentry.init({
-  dsn: "https://2840efb448eb552311f2710560e5109a@o4509348136353792.ingest.us.sentry.io/4509348139565056",
-  // integrations: [new BrowserTracing()],
+  dsn: process.env.REACT_APP_SENTRY_DSN,
   tracesSampleRate: 1.0,
 });
 
-
-
 function App() {
-  // throw new Error("Error de prueba");
+  // Inicializa GrowthBook
+  
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<RegisterUser />} />
-        <Route path="/homepage" element={<Homepage />} />
-      </Routes>
-    </Router>
+    <GrowthBookProvider growthbook={gb} plugins={[autoAttributesPlugin]}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<RegisterUser />} />
+          <Route path="/homepage" element={<Homepage />} />
+        </Routes>
+      </Router>
+    </GrowthBookProvider>
   );
 }
 
