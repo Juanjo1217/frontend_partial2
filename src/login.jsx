@@ -66,6 +66,10 @@ function Login() {
       {responseMessage && <p>{responseMessage}</p>}
       <p>
         ¿No tienes una cuenta? <Link to="/register">Regístrate aquí</Link>
+
+      </p>
+      <p>
+        return <button onClick={() => {throw new Error("This is your first error!");}}>Break the world</button>;
       </p>
     </div>
   );
